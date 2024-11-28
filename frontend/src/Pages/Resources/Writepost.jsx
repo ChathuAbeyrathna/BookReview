@@ -182,15 +182,10 @@ export const Writepost = () => {
 
   return (
     <div className="container">
-      <h1 className="title">Share Your Knowledge...!</h1>
+      <h1 className="title">Share Your Review...!</h1>
 
       <div className="resorestrict">
-        <p>
-          You can post resources related to IoT within the categories included in this website and upload 
-          Data Sheets directly to the Data Sheets category. Please be mindful to post only standard information. 
-          The admin will verify your post before it gets displayed on the website. Please check your email for 
-          the verification email after posting.
-        </p>
+      
         <input
           type="checkbox"
           name="agree"
@@ -222,7 +217,7 @@ export const Writepost = () => {
         <div className="reso-post-categories-container">
           <div className="reso-category-input">
             <select onChange={handleMainCategoryChange} className="main-category">
-              <option value={maincats}>Main Category</option>
+              <option value={maincats}>Category</option>
               {Object.keys(categoriesList).map((maincategory) => (
                 <option key={maincategory} value={maincategory}>
                   {maincategory}
@@ -230,14 +225,6 @@ export const Writepost = () => {
               ))}
             </select>
 
-            <select onChange={handleCategoryChange} className="resoaddcategory">
-              <option value="">Sub Category</option>
-              {categoriesList[maincats].map((category, index) => (
-                <option key={index} value={category}>
-                  {category}
-                </option>
-              ))}
-            </select>
           </div>
 
           <div className="reso-category-list">
@@ -251,7 +238,8 @@ export const Writepost = () => {
             ))}
           </div>
         </div>
-<h3>Cover Image:</h3>
+
+    <h3>Cover Image:</h3>
         <input onChange={handlePhotoChange} type="file" className="file-input" />
 
         <ReactQuill
