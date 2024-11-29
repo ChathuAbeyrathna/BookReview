@@ -14,21 +14,10 @@ const passportSetup = require('./passport');
 const authRoute=require('./routes/auth');
 const userRoute=require('./routes/users');
 const verifyToken = require('./middleware/verifyToken');
-const cookieSession = require("cookie-session")
-const blogPostRoutes=require('./routes/blogPosts');
-const blogCommentRoutes=require('./routes/blogComments');
-const Shoppost = require('./models/Shoppost');
-const questionRoute= require("./routes/questions");
-const shoppostRoute= require("./routes/shoppost");
+const cookieSession = require("cookie-session");
 const resopostRoutes = require("./routes/resoposts");
 const resocommentRoutes = require("./routes/resocomments");
-const projectpostRoute = require("./routes/projectposts");
-const projectCommentRoutes=require('./routes/projectComments');
-const answerRoutes = require("./routes/answer");
 const bookMarkRoutes = require('./routes/BookMarks');
-// const translate = require('google-translate-api');
-
-
 
 //database 
  const connectDB=async()=>{
@@ -52,9 +41,6 @@ app.use(cors({
 app.use(cookieParser())
 app.use(bodyParser.json());
 
-
-app.use("/",require("./routes/shoppost"));
-
 // session
 app.use(session({
     secret: process.env.accessToken_secret,
@@ -65,11 +51,6 @@ app.use(session({
   
   app.use(passport.initialize());
   app.use(passport.session());
-  
-  
-  
-  
-  
   
     app.get("/auth/google",
     passport.authenticate("google", { scope: ['profile'] })
@@ -95,39 +76,12 @@ app.use(session({
   })
   
    
-  app.use("/api/shoppost",shoppostRoute); 
-  app.use("/api/questions",questionRoute);
   app.use("/api/auth", authRoute);
   app.use("/api/users", userRoute);
-  app.use("/api/blogPosts", blogPostRoutes);
-app.use("/api/blogComments", blogCommentRoutes);
-app.use("/api/resoposts", resopostRoutes); // Route for resource posts
-app.use("/api/resocomments", resocommentRoutes);
-app.use("/api/projectposts", projectpostRoute);
-app.use("/api/projectComments", projectCommentRoutes);
-app.use("/api/answer", answerRoutes);
-app.use("/api/bookMarks", bookMarkRoutes);
+  app.use("/api/resoposts", resopostRoutes); // Route for resource posts
+  app.use("/api/resocomments", resocommentRoutes);
+  app.use("/api/bookMarks", bookMarkRoutes);
 
-
-Shoppost.init().then(() => {
-  console.log('Indexes are ensured to be created.');
-}).catch((err) => {
-  console.error('Error ensuring indexes:', err);
-});
-// const dropAndCreateIndex = async () => {
-//   try {
-//     await Shoppost.collection.dropIndex('createdAt_1'); // Assuming 'createdAt_1' is the name of the index
-//     console.log('Old index dropped successfully');
-    
-//     // Ensure new index is created with correct TTL
-//     await Shoppost.init();
-//     console.log('New index created successfully');
-//   } catch (err) {
-//     console.error('Error handling index:', err);
-//   }
-// };
-
-// dropAndCreateIndex(); 
 
 app.get("/api/search", async (req, res) => {
   try {
@@ -148,38 +102,9 @@ app.get("/api/search", async (req, res) => {
       },
     ]);
 
-    const blogResults = await Post.aggregate([
-      {
-        $search: {
-          index: "searchblog", 
-          text: {
-            query: query,
-            path: {
-              wildcard: "*", 
-            },
-          },
-        },
-      },
-    ]);
-
-    // Search in blog
-    const projectResults = await Post.aggregate([
-      {
-        $search: {
-          index: "SearchProject", 
-          text: {
-            query: query,
-            path: {
-              wildcard: "*", 
-            },
-          },
-        },
-      },
-    ]);
-
-
+ 
     // Combine results from both collections
-    const combinedResults = [...resoResults, ...blogResults, ...projectResults];
+    const combinedResults = [...resoResults];
 
     res.json(combinedResults); // Send combined search results as JSON response
   } catch (error) {
@@ -187,40 +112,6 @@ app.get("/api/search", async (req, res) => {
     res.status(500).json({ message: "Internal server error" }); 
   }
 });
-// app.post('/api/translate', async (req, res) => {
-//   const { text, targetLanguage } = req.body;
-
-//   try {
-//       const result = await translate(text, { to: targetLanguage });
-//       res.json({ translatedText: result.text });
-//   } catch (error) {
-//       console.error('Translation error:', error);
-//       res.status(500).json({ error: 'Translation failed' });
-//   }
-// });
-
-
-
-const AdStatSchema = new mongoose.Schema({
-  date: { type: String, required: true },
-  remainingCount: { type: Number, required: true },
-  //deletedCount: { type: Number, required: true }
-}); 
-
-const AdStat = mongoose.model('AdStat', AdStatSchema);
-
-app.get('/ad-stats', async (req, res) => {
-  try {
-    const adStats = await AdStat.find().sort({ date: -1 }).limit(30); // Fetch latest 30 records, adjust as needed
-    res.json(adStats);
-  } catch (error) {
-    console.error("Error fetching ad stats:", error);
-    res.status(500).send('Server Error');
-  }
-});
-
- 
-
 
 
 app.listen(5000,()=>{
