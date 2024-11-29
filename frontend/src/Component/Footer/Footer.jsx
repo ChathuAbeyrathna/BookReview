@@ -13,7 +13,7 @@ export const Footer = () => {
         
         <div className="email">
           {" "}
-          <a href="mailto:triviatechnology2024@gmail.com" target='_blank' rel="noreferrer">
+          <a href="" target='_blank' rel="noreferrer">
             {" "}
             <CIcon
               icon={icon.cibGmail}
@@ -26,7 +26,7 @@ export const Footer = () => {
 
         <div className="LinkedIn">
           {" "}
-          <a href="https://www.linkedin.com/showcase/gavesha/" target='_blank' rel="noreferrer">
+          <a href="" target='_blank' rel="noreferrer">
             <CIcon
               icon={icon.cibLinkedinIn}
               size=""
@@ -36,22 +36,9 @@ export const Footer = () => {
           </a>{" "}
         </div>
 
-
-        <div className="tiktok">
-          {" "}
-          <a href="https://www.tiktok.com/@gaveshaedtech" target='_blank' rel="noreferrer">
-            {" "}
-            <CIcon
-              icon={icon.cibTiktok}
-              size=""
-              style={{ "--ci-primary-color": "black" }}
-              className="dropdownIcon"
-            />{" "}
-          </a>{" "}
-        </div>
         <div className="facebook">
           {" "}
-          <a href="https://www.facebook.com/gaveshaEdtech/" target='_blank' rel="noreferrer">
+          <a href="" target='_blank' rel="noreferrer">
             {" "}
             <CIcon
               icon={icon.cibFacebookF}
@@ -63,7 +50,7 @@ export const Footer = () => {
         </div>
         <div className="youtube">
           {" "}
-          <a href="https://www.youtube.com/c/Gavesha" target='_blank' rel="noreferrer">
+          <a href="" target='_blank' rel="noreferrer">
             {" "}
             <CIcon
               icon={icon.cibYoutube}
