@@ -3,7 +3,6 @@ import { URL } from "../../url";
 import axios from "axios"; 
 import "./Writepost.css";
 import { useNavigate } from "react-router-dom";
-import { ImCross } from "react-icons/im";
 import { imageDb } from "../../firebase";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { v4 } from "uuid";
@@ -12,88 +11,28 @@ import { useUsers } from "../../Context/UserContext";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css"; // Import Quill CSS
 
-const categoriesList = {
-  "Sensors": [
-    "All Categories",
-    "Motion Sensors",
-    "Temperature Sensors",
-    "Light Sensors",
-    "Proximity Sensors",
-    "Gas Sensors",
-    "Sound Sensors",
-    "Image Sensors/Cameras",
-    "Environmental Sensors",
-    "Other sensors"
-  ],
-  "PCB (Printed Circuit Board)": [
-    "All Categories",
-    "Design Software",
-    "Manufacturing Services",
-    "Components Sourcing",
-    "PCB Layout Techniques",
-    "Assembly and Soldering",
-    "Testing and Validation"
-  ],
-  "Communication Modules": [
-    "All Categories",
-    "Wi-Fi Modules",
-    "Bluetooth Modules",
-    "Zigbee Modules",
-    "LoRa Modules",
-    "Cellular Modules",
-    "RFID and NFC Modules"
-  ],
-  "Microcontrollers": [
-    "All Categories",
-    "Popular Microcontroller Families (Arduino, ESP32, etc.)",
-    "Development Environments (IDEs)",
-    "Programming Microcontrollers",
-    "Power Management for Microcontrollers",
-    "Interfaces and Peripherals"
-  ],
-  "IoT Platforms and Cloud Services": [
-    "All Categories",
-    "IoT Platforms",
-    "Cloud Storage Solutions",
-    "Data Analytics",
-    "Device Management",
-    "Integration and APIs"
-  ],
-  "IoT Prototyping and Development Kits": [
-    "All Categories",
-    "Arduino Kits",
-    "Raspberry Pi Kits",
-    "ESP32 Development Kits",
-    "Sensor Kits",
-    "Wireless Communication Kits"
-  ],
-  "Others": [
-    "All Categories",
-    "Codes/Programming",
-    "Power Management",
-    "Prototyping Tools",
-    "Enclosures and Cases",
-    "Networking",
-    "Wireless Communication",
-    "Machine Learning and AI for IoT",
-    "Others"
-  ]
-};
+const categoriesList = [
+  "Sensors",
+  "PCB (Printed Circuit Board)",
+  "Communication Modules",
+  "Microcontrollers",
+  "IoT Platforms and Cloud Services",
+  "IoT Prototyping and Development Kits",
+  "Others",
+];
 
 export const Writepost = () => {
   const [postedBy, setPostedBy] = useState("");
   const [title, setTitle] = useState("");
   const [desc, setDesc] = useState("");
-  const [maincats, setMainCats] = useState(Object.keys(categoriesList)[0]);
-  const [cats, setCats] = useState([]);
+  const [mainCategory, setMainCategory] = useState(categoriesList[0]);
   const [file, setFile] = useState(null);
   const navigate = useNavigate();
   const [showAlert, setShowAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
-
   const { user } = useUsers();
   const [agree, setAgree] = useState(false);
-  
+
   useEffect(() => {
     if (user) {
       setPostedBy(user._id);
@@ -106,31 +45,12 @@ export const Writepost = () => {
   };
 
   const handleMainCategoryChange = (e) => {
-    const selectedMainCategory = e.target.value;
-    setMainCats(selectedMainCategory);
-    setCats([]); // Clear subcategories when main category changes
-  };
-
-  const handleCategoryChange = (e) => {
-    addCategory(e);
-  };
-
-  const deleteCategory = (i) => {
-    let updatedCats = [...cats];
-    updatedCats.splice(i, 1);
-    setCats(updatedCats);
-  };
-
-  const addCategory = (e) => {
-    const selectedCategory = e.target.value;
-    if (selectedCategory && !cats.includes(selectedCategory) && selectedCategory !== "All Categories") {
-      setCats([...cats, selectedCategory]);
-    }
+    setMainCategory(e.target.value);
   };
 
   const handleSubmit = async (e) => { 
     e.preventDefault();
-    if (!title.trim() || !desc.trim() || cats.length === 0 || !file) {
+    if (!title.trim() || !desc.trim() || !file) {
       alert("All fields are required.");
       return;
     }
@@ -155,8 +75,7 @@ export const Writepost = () => {
     const resoPost = {
       title,
       desc,
-      maincategories: maincats,
-      categories: cats,
+      maincategory: mainCategory, // Use only the main category
       photo: photoUrl,
       postedBy: postedBy,
     };
@@ -166,7 +85,7 @@ export const Writepost = () => {
         withCredentials: true,
       });
       console.log(res.data);
-      setAlertMessage("Your resource is submitted for Admin approval.");
+      setAlertMessage("Your post has been published successfully.");
       setShowAlert(true);
     } catch (err) {
       console.log(err);
@@ -175,8 +94,8 @@ export const Writepost = () => {
 
   const handleAlertClose = () => {
     setShowAlert(false);
-    if (alertMessage === "Your resource is submitted for Admin approval.") {
-      navigate('/resources');
+    if (alertMessage === "Your post has been published successfully.") {
+      navigate('/resources'); // Redirect to the resources page after publishing
     }
   };
 
@@ -185,7 +104,6 @@ export const Writepost = () => {
       <h1 className="title">Share Your Review...!</h1>
 
       <div className="resorestrict">
-      
         <input
           type="checkbox"
           name="agree"
@@ -214,32 +132,17 @@ export const Writepost = () => {
           value={title}
         />
 
-        <div className="reso-post-categories-container">
-          <div className="reso-category-input">
-            <select onChange={handleMainCategoryChange} className="main-category">
-              <option value={maincats}>Category</option>
-              {Object.keys(categoriesList).map((maincategory) => (
-                <option key={maincategory} value={maincategory}>
-                  {maincategory}
-                </option>
-              ))}
-            </select>
-
-          </div>
-
-          <div className="reso-category-list">
-            {cats.map((c, i) => (
-              <div key={i} className="reso-category-item">
-                <p>{c}</p>
-                <p onClick={() => deleteCategory(i)} className="reso-delete-button">
-                  <ImCross />
-                </p>
-              </div>
+        <div className="reso-category-input">
+          <select onChange={handleMainCategoryChange} className="main-category">
+            {categoriesList.map((mainCategory) => (
+              <option key={mainCategory} value={mainCategory}>
+                {mainCategory}
+              </option>
             ))}
-          </div>
+          </select>
         </div>
 
-    <h3>Cover Image:</h3>
+        <h3>Cover Image:</h3>
         <input onChange={handlePhotoChange} type="file" className="file-input" />
 
         <ReactQuill
@@ -249,12 +152,12 @@ export const Writepost = () => {
           placeholder="Enter Post Description"
           modules={{
             toolbar: [
-              [{ 'header': '1'}, {'header': '2'}, { 'font': [] }],
-              [{size: []}],
+              [{ header: '1' }, { header: '2' }, { font: [] }],
+              [{ size: [] }],
               ['bold', 'italic', 'blockquote'],
-              [{'list': 'ordered'}, {'list': 'bullet'}],
+              [{ list: 'ordered' }, { list: 'bullet' }],
               ['link', 'image'],
-              ['clean']
+              ['clean'],
             ],
           }}
         />
