@@ -20,12 +20,6 @@ export const Navbar = () => {
     setDropdownVisible(false);
   };
 
-// Ensure to fetch users on component mount or as needed
-// useEffect(() => {
-//   fetchUsers();
-// }, [fetchUsers]);
- 
-
   console.log(user);
 
   return (
@@ -63,16 +57,6 @@ export const Navbar = () => {
           {menu === "blogs" ? <hr /> : <></>}
         </li>
 
-        <li
-          onClick={() => {
-            setMenu("forum");
-          }}
-        >
-          <Link style={{ textDecoration: "none" }} to="/forum">
-            Contact
-          </Link>
-          {menu === "forum" ? <hr /> : <></>}
-        </li>
          
       </ul>
 
