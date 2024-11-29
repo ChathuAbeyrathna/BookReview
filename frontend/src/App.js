@@ -11,7 +11,6 @@ import { UserContextProvider } from "./Context/UserContext";
 
 import ErrorBoundary from './ErrorBoundary';
 
-import { Home } from "./Pages/Home/Home";
 import SignUp from "./Pages/LogIn/SignUp";
 import Login from "./Pages/LogIn/LogIn";
 import ForgotPassword from "./Pages/LogIn/ForgotPassword";
@@ -25,12 +24,12 @@ import { QuestionSearch } from "./Pages/Forum/QuestionSearch";
 import {Resources} from './Pages/Resources/Resources';
 import {Sensors} from './Pages/Resources/Sensors/Sensors';
 import {Pcb} from './Pages/Resources/Sensors/pcb';
-import {Communi} from './Pages/Resources/Sensors/communi';
+import {Communi} from './Pages/Resources/Sensors/fiction';
 import {DataSheet} from './Pages/Resources/Sensors/datasheets/dataSheet';
 import {DataSheetWrite} from './Pages/Resources/Sensors/datasheets/DataSheetWrite';
-import {IotPlat} from './Pages/Resources/Sensors/IotPlat';
-import {IotProto} from './Pages/Resources/Sensors/IotProto';
-import {Micro} from './Pages/Resources/Sensors/micro';
+import {IotPlat} from './Pages/Resources/Sensors/nonfiction';
+import {IotProto} from './Pages/Resources/Sensors/romance';
+import {Micro} from './Pages/Resources/Sensors/child';
 import {Others} from './Pages/Resources/Sensors/others';
 import {Writepost} from './Pages/Resources/Writepost';
 import {ResoPostdetails} from './Pages/Resources/ResoPostdetails';
@@ -78,7 +77,6 @@ const AppWithLoader = () => {
         <>
           <Routes>
             <Route element={<MainLayout />}>
-              <Route path="/home" element={<Home />} />
               <Route path="/search" element={<SearchResults />} />
            <Route path="/resosearch" element={<ResoSearch/>} />
           <Route path="/questionsearch" element={<QuestionSearch/>}/>
@@ -108,7 +106,7 @@ const AppWithLoader = () => {
               <Route path="/EditProfile" element={<EditProfile />} />
              
 
-              <Route path="/" element={<Navigate to="/home" />} />
+              <Route path="/" element={<Navigate to="/resources" />} />
             </Route>
 
               <Route path="/signup" element={<SignUp />} />
